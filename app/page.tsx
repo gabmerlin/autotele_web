@@ -22,12 +22,22 @@ import {
   Check
 } from 'lucide-react'
 import ImageGallery from '@/components/ImageGallery'
+import DownloadButton from '@/components/DownloadButton'
 
 export default function Home() {
   const [openFaq, setOpenFaq] = useState<number | null>(null)
+  const [versionInfo, setVersionInfo] = useState<any>(null)
   const { scrollYProgress } = useScroll()
   const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0])
   const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.8])
+
+  useEffect(() => {
+    // Charger les informations de version pour le footer
+    fetch('/updates/version.json')
+      .then(response => response.json())
+      .then(data => setVersionInfo(data))
+      .catch(() => setVersionInfo(null))
+  }, [])
 
   const navItems = [
     { name: "Fonctionnalités", link: "#features", icon: <Sparkles className="w-4 h-4" /> },
@@ -186,12 +196,7 @@ export default function Home() {
             transition={{ duration: 0.8, delay: 0.8 }}
             className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-12"
           >
-            <a href="/AutoTele-Setup-v2.1.1.exe" download className="btn-premium group">
-              <span className="flex items-center gap-3">
-                <Download className="w-6 h-6 group-hover:animate-bounce" />
-                Télécharger AutoTele
-              </span>
-            </a>
+            <DownloadButton />
             <a 
               href="#features" 
               className="glass-panel px-8 py-4 rounded-full text-white hover:bg-white/10 transition-all duration-300 hover:scale-105 border-blue-500/30 hover:border-blue-500/50"
@@ -502,12 +507,11 @@ export default function Home() {
               en toute sécurité. Aucune inscription requise.
             </p>
             
-            <a href="/AutoTele-Setup-v2.1.1.exe" download className="btn-premium group inline-flex mb-12">
-              <span className="flex items-center gap-3">
-                <Download className="w-6 h-6 group-hover:animate-bounce" />
-                Télécharger pour Windows
-              </span>
-            </a>
+            <DownloadButton 
+              className="btn-premium group inline-flex mb-12"
+              children="Télécharger pour Windows"
+              showVersion={true}
+            />
             
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
               {[
@@ -576,7 +580,11 @@ export default function Home() {
               <h4 className="text-xl font-semibold mb-4 text-white">Liens rapides</h4>
               <ul className="space-y-2 text-gray-400">
                 <li>
-                  <a href="/AutoTele-Setup-v2.1.1.exe" download className="hover:text-blue-400 transition-colors duration-200">
+                  <a 
+                    href={versionInfo?.direct_exe_url || "/updates/latest/AutoTele-Setup-v2.1.1.exe"} 
+                    download 
+                    className="hover:text-blue-400 transition-colors duration-200"
+                  >
                     Télécharger
                   </a>
                 </li>
