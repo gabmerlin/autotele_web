@@ -167,7 +167,6 @@ export default function Home() {
           >
             <h1 className="text-6xl md:text-8xl lg:text-9xl font-bold mb-6 text-glow">
               <span className="gradient-text">AutoTele</span>
-              <span className="block text-4xl md:text-5xl mt-4 text-gray-300">2.1.1</span>
             </h1>
           </motion.div>
           
