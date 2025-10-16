@@ -1,16 +1,12 @@
 {
-    "version": "2.1.1",
+    "version": "2.1.3",
     "build": "20251016",
     "download_url": "https://autotele.qgchatting.com/updates/latest/AutoTele-Setup-v2.1.2.exe",
     "direct_exe_url": "https://autotele.qgchatting.com/updates/latest/AutoTele-Setup-v2.1.2.exe",
-    "release_notes": "🎉 Version 2.1.1 - Stabilité et améliorations\n\n✨ NOUVELLES FONCTIONNALITÉS:\n• Planification limitée à 15 jours pour plus de stabilité\n• Horaires prédéfinis optionnels selon vos paramètres\n• Système de mise à jour amélioré et fonctionnel\n\n🐛 CORRECTIONS:\n• Sessions Telegram persistantes (plus de reconnexion)\n• Chiffrement natif Telethon (performances améliorées)\n• Interface plus intuitive et réactive",
+    "release_notes": "🎉 Version 2.1.3 - Stabilité et améliorations\n\n✨ NOUVELLES FONCTIONNALITÉS:\n• Planification limitée à 15 jours pour plus de stabilité\n• Horaires prédéfinis optionnels selon vos paramètres\n• Système de mise à jour amélioré et fonctionnel\n\n🐛 CORRECTIONS:\n• Sessions Telegram persistantes (plus de reconnexion)\n• Chiffrement natif Telethon (performances améliorées)\n• Interface plus intuitive et réactive",
     "required": false,
     "min_version": "2.0.0",
     "changelog": [
-      "✨ Planification limitée à 15 jours maximum",
-      "✨ Horaires par défaut désormais optionnels",
-      "🔧 Sessions Telegram persistantes entre redémarrages",
-      "🔧 Chiffrement natif Telethon (plus simple et stable)",
       "🔧 Système de mise à jour corrigé et fonctionnel",
       "🎨 Interface optimisée et améliorations UX"
     ],
