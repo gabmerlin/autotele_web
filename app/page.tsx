@@ -95,7 +95,7 @@ export default function Home() {
     },
     {
       question: 'Ai-je besoin de créer un compte pour utiliser AutoTele ?',
-      answer: 'Oui, pour utiliser AutoTele, vous devez créer un compte et souscrire à un abonnement. Cela vous donne accès à toutes les fonctionnalités premium et au support technique. L\'inscription est simple et rapide.'
+      answer: 'Oui, pour utiliser AutoTele, vous devez créer un compte et souscrire à un abonnement. Cela vous donne accès à toutes les fonctionnalités premium et au support technique. L\'inscription est simple et rapide. Création du compte directement via l\'application.'
     },
     {
       question: 'Comment fonctionne la gestion des limites d\'envoi ?',
