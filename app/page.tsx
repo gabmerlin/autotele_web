@@ -618,7 +618,7 @@ export default function Home() {
           </div>
           
           <div className="border-t border-white/10 pt-8 text-center text-gray-400">
-            <p className="mb-4">© 2024 AutoTele. Tous droits réservés.</p>
+            <p className="mb-4">© 2025 AutoTele. Tous droits réservés.</p>
             <p className="text-sm">
               AutoTele n'est pas affilié à Telegram. Toutes les marques sont la propriété de leurs propriétaires respectifs.
             </p>
