@@ -1,7 +1,7 @@
 {
   "version": "2.1.4",
   "build": "20251016",
-  "download_url": "https://autotele.qgchatting.com/updates/latest",
+  "download_url": "https://autotele.qgchatting.com/updates/latest/AutoTele-Setup-v2.1.4.exe",
   "direct_exe_url": "https://autotele.qgchatting.com/updates/latest/AutoTele-Setup-v2.1.4.exe",
   "release_notes": "🎉 Version 2.1.4 - Corrections de stabilité\n\n✨ NOUVELLES FONCTIONNALITÉS:\n• Système de détection de version corrigé et fiable\n• Mise à jour automatique améliorée\n• Interface plus réactive\n\n🐛 CORRECTIONS:\n• Correction du problème de détection de version persistante\n• Amélioration de la stabilité générale\n• Optimisation des performances\n• Gestion des erreurs renforcée",
   "required": false,
