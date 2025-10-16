@@ -95,7 +95,7 @@ export default function Home() {
     },
     {
       question: 'Ai-je besoin de créer un compte pour utiliser AutoTele ?',
-      answer: 'Non ! AutoTele ne nécessite aucune inscription, aucun login, aucune base de données externe. Vous téléchargez l\'application, vous vous connectez avec vos comptes Telegram, et c\'est tout. Simple et direct.'
+      answer: 'Oui, pour utiliser AutoTele, vous devez créer un compte et souscrire à un abonnement. Cela vous donne accès à toutes les fonctionnalités premium et au support technique. L\'inscription est simple et rapide.'
     },
     {
       question: 'Comment fonctionne la gestion des limites d\'envoi ?',
@@ -212,7 +212,7 @@ export default function Home() {
             transition={{ duration: 0.8, delay: 1 }}
             className="flex flex-wrap justify-center gap-6 text-sm"
           >
-            {['Téléchargement Gratuit', 'Paiement en BTC', 'Windows compatible', 'Aucun risque de ban'].map((badge, idx) => (
+            {['Fonctionnalités Premium', 'Support dédié', 'Windows compatible', 'Aucun risque de ban'].map((badge, idx) => (
               <div key={idx} className="glass-panel px-6 py-3 rounded-full flex items-center gap-2">
                 <Check className="w-4 h-4 text-green-400" />
                 <span className="text-gray-200">{badge}</span>
@@ -504,7 +504,7 @@ export default function Home() {
             
             <p className="text-xl text-gray-300 mb-12 max-w-2xl mx-auto leading-relaxed">
               Téléchargez AutoTele 2.1.1 maintenant et commencez à automatiser vos messages 
-              en toute sécurité. Aucune inscription requise.
+              en toute sécurité. Créez votre compte et profitez de toutes les fonctionnalités premium.
             </p>
             
             <DownloadButton 
@@ -515,10 +515,10 @@ export default function Home() {
             
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
               {[
-                { label: 'Téléchargement Gratuit', icon: <Check /> },
-                { label: 'Paiement en BTC', icon: <Check /> },
+                { label: 'Fonctionnalités Premium', icon: <Check /> },
+                { label: 'Support dédié', icon: <Check /> },
                 { label: 'Installation rapide', icon: <Check /> },
-                { label: 'Mises à jour gratuites', icon: <Check /> },
+                { label: 'Mises à jour incluses', icon: <Check /> },
               ].map((item, idx) => (
                 <motion.div
                   key={idx}
@@ -602,8 +602,8 @@ export default function Home() {
               <h4 className="text-xl font-semibold mb-4 text-white">Contact & Support</h4>
               <ul className="space-y-2 text-gray-400">
                 <li>
-                  <a href="mailto:support@autotele.app" className="hover:text-blue-400 transition-colors duration-200 flex items-center gap-2">
-                    <span>📧</span> support@autotele.app
+                  <a href="https://t.me/cob_cob_cob" target="_blank" rel="noopener noreferrer" className="hover:text-blue-400 transition-colors duration-200 flex items-center gap-2">
+                    <span>💬</span> @cob_cob_cob
                   </a>
                 </li>
                 {['Support Telegram', 'Signaler un bug', 'Suggérer une fonctionnalité'].map((link, idx) => (
