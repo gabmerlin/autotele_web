@@ -516,7 +516,7 @@ export default function Home() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
               {[
                 { label: 'Téléchargement Gratuit', icon: <Check /> },
-                { label: 'Sans inscription', icon: <Check /> },
+                { label: 'Paiement en BTC', icon: <Check /> },
                 { label: 'Installation rapide', icon: <Check /> },
                 { label: 'Mises à jour gratuites', icon: <Check /> },
               ].map((item, idx) => (
