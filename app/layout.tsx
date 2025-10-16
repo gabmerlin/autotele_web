@@ -9,7 +9,7 @@ const poppins = Poppins({
 })
 
 export const metadata: Metadata = {
-  title: 'AutoTele 2.1.1 - Automatisation intelligente pour Telegram',
+  title: 'AutoTele - Automatisation intelligente pour Telegram',
   description: 'Automatisez l\'envoi de vos messages Telegram en toute sécurité grâce aux fonctions natives de planification. Multicomptes, programmation avancée, messagerie intégrée.',
   keywords: 'AutoTele, Telegram, automatisation, messages programmés, multicomptes',
 }

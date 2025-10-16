@@ -212,7 +212,7 @@ export default function Home() {
             transition={{ duration: 0.8, delay: 1 }}
             className="flex flex-wrap justify-center gap-6 text-sm"
           >
-            {['100% Gratuit', 'Sans inscription', 'Windows compatible', 'Aucun risque de ban'].map((badge, idx) => (
+            {['Téléchargement Gratuit', 'Paiement en BTC', 'Windows compatible', 'Aucun risque de ban'].map((badge, idx) => (
               <div key={idx} className="glass-panel px-6 py-3 rounded-full flex items-center gap-2">
                 <Check className="w-4 h-4 text-green-400" />
                 <span className="text-gray-200">{badge}</span>
@@ -515,7 +515,7 @@ export default function Home() {
             
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
               {[
-                { label: '100% Gratuit', icon: <Check /> },
+                { label: 'Téléchargement Gratuit', icon: <Check /> },
                 { label: 'Sans inscription', icon: <Check /> },
                 { label: 'Installation rapide', icon: <Check /> },
                 { label: 'Mises à jour gratuites', icon: <Check /> },
