@@ -608,7 +608,7 @@ export default function Home() {
                 </li>
                 {['Support Telegram', 'Signaler un bug', 'Suggérer une fonctionnalité'].map((link, idx) => (
                   <li key={idx}>
-                    <a href="#" className="hover:text-blue-400 transition-colors duration-200">
+                    <a href="https://t.me/cob_cob_cob" target="_blank" rel="noopener noreferrer" className="hover:text-blue-400 transition-colors duration-200">
                       {link}
                     </a>
                   </li>
