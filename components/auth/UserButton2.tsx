@@ -1,96 +1,26 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { createClient } from '@/lib/supabase/client'
+import { useState } from 'react'
 import { User, LogOut, CreditCard, ChevronDown, ShoppingCart } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import AuthModal from './AuthModal'
+import { useAuth } from '@/lib/contexts/AuthContext'
+import { createClient } from '@/lib/supabase/client'
 
 export default function UserButton2() {
-  const [user, setUser] = useState<any>(null)
-  const [loading, setLoading] = useState(true)
+  const { user, hasSubscription, loading } = useAuth()
   const [showAuthModal, setShowAuthModal] = useState(false)
   const [showMenu, setShowMenu] = useState(false)
-  const [hasSubscription, setHasSubscription] = useState(false)
   const router = useRouter()
-
-  useEffect(() => {
-    const supabase = createClient()
-    let authSubscription: any = null
-
-    // Fonction pour vérifier l'abonnement
-    const checkSubscription = async (userId: string) => {
-      try {
-        const { data } = await supabase
-          .from('subscriptions')
-          .select('*')
-          .eq('user_id', userId)
-          .eq('status', 'active')
-          .maybeSingle()
-
-        if (data && (!data.expires_at || new Date(data.expires_at) > new Date())) {
-          setHasSubscription(true)
-        } else {
-          setHasSubscription(false)
-        }
-      } catch (err) {
-        setHasSubscription(false)
-      }
-    }
-
-    // Charger l'utilisateur initial
-    const loadUser = async () => {
-      try {
-        const { data: { user: currentUser } } = await supabase.auth.getUser()
-        console.log('UserButton2 - Initial user:', currentUser?.email)
-        setUser(currentUser)
-        if (currentUser) {
-          await checkSubscription(currentUser.id)
-        }
-        setLoading(false)
-      } catch (error) {
-        console.error('UserButton2 - Error loading user:', error)
-        setLoading(false)
-      }
-    }
-
-    loadUser()
-
-    // Écouter les changements
-    authSubscription = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log('UserButton2 - Auth change:', event, session?.user?.email)
-      
-      // Toujours mettre loading à false pour n'importe quel événement
-      setLoading(false)
-      
-      setUser(session?.user ?? null)
-      if (session?.user) {
-        await checkSubscription(session.user.id)
-      } else {
-        setHasSubscription(false)
-      }
-    })
-
-    return () => {
-      authSubscription?.data?.subscription?.unsubscribe()
-    }
-  }, [])
 
   const handleLogout = async () => {
     try {
       const supabase = createClient()
-      const { error } = await supabase.auth.signOut()
-      
-      if (error) {
-        console.error('Erreur lors de la déconnexion:', error)
-      }
-      
+      await supabase.auth.signOut()
       setShowMenu(false)
-      // Forcer le rechargement pour s'assurer que l'état est mis à jour
       window.location.reload()
     } catch (err) {
       console.error('Erreur lors de la déconnexion:', err)
-      // En cas d'erreur, forcer quand même le rechargement
       window.location.reload()
     }
   }
@@ -201,4 +131,3 @@ export default function UserButton2() {
     </div>
   )
 }
-

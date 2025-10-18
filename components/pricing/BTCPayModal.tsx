@@ -28,8 +28,9 @@ export default function BTCPayModal({ isOpen, onClose, checkoutUrl, invoiceId }:
           setStatus('paid')
           clearInterval(interval)
           setTimeout(() => {
+            // Forcer le rechargement complet pour mettre à jour l'état d'authentification
             window.location.href = '/dashboard'
-          }, 3000)
+          }, 2000)
         } else if (data.status === 'expired' || data.status === 'invalid') {
           setStatus('expired')
           clearInterval(interval)

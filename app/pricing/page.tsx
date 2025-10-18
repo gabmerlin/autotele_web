@@ -10,11 +10,12 @@ import { ArrowLeft, CreditCard, Shield, Zap, Award, Headphones } from 'lucide-re
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import AuthModal from '@/components/auth/AuthModal'
+import { useAuth } from '@/lib/contexts/AuthContext'
 
 export default function PricingPage() {
   const [plans, setPlans] = useState<Plan[]>([])
   const [loading, setLoading] = useState(true)
-  const [user, setUser] = useState<any>(null)
+  const { user } = useAuth()
   const [showAuthModal, setShowAuthModal] = useState(false)
   const [showBTCPayModal, setShowBTCPayModal] = useState(false)
   const [checkoutUrl, setCheckoutUrl] = useState<string | null>(null)
@@ -56,11 +57,6 @@ export default function PricingPage() {
     }
 
     loadPlans()
-
-    // Vérifier l'utilisateur
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      setUser(user)
-    })
   }, [])
 
   const handleSubscribe = async (planId: string) => {

@@ -1,127 +1,30 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { createClient } from '@/lib/supabase/client'
+import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { User, CreditCard, Calendar, Download, LogOut, Sparkles, MessageCircle } from 'lucide-react'
 import DownloadButton from '@/components/DownloadButton'
+import { useAuth } from '@/lib/contexts/AuthContext'
+import { createClient } from '@/lib/supabase/client'
 
 export default function Dashboard() {
-  const [user, setUser] = useState<any>(null)
-  const [hasSubscription, setHasSubscription] = useState(false)
-  const [subscription, setSubscription] = useState<any>(null)
-  const [loading, setLoading] = useState(true)
+  const { user, subscription, hasSubscription, loading } = useAuth()
   const router = useRouter()
 
+  // Rediriger si pas connecté
   useEffect(() => {
-    let mounted = true
-    const supabase = createClient()
-    
-    // Fonction pour vérifier l'abonnement (non bloquante)
-    const checkSubscription = (userId: string) => {
-      
-      // Ne pas attendre - juste vérifier en arrière-plan
-      const fetchSubscription = async () => {
-        try {
-          const { data: sub, error } = await supabase
-            .from('subscriptions')
-            .select('*')
-            .eq('user_id', userId)
-            .eq('status', 'active')
-            .single()
-
-          if (!mounted) return
-
-          if (error) {
-            setHasSubscription(false)
-            setSubscription(null)
-          } else if (sub && (!sub.expires_at || new Date(sub.expires_at) > new Date())) {
-            setHasSubscription(true)
-            setSubscription(sub)
-          } else {
-            setHasSubscription(false)
-            setSubscription(null)
-          }
-        } catch (err: any) {
-          if (mounted) {
-            setHasSubscription(false)
-            setSubscription(null)
-          }
-        }
-      }
-
-      fetchSubscription()
+    if (!loading && !user) {
+      router.push('/')
     }
-
-    // Vérifier l'authentification initiale avec getSession au lieu de getUser
-    const checkAuth = async () => {
-      try {
-        const { data: { session }, error } = await supabase.auth.getSession()
-        
-        if (error) {
-          console.error('Session error:', error)
-        }
-        
-        if (!session?.user) {
-          if (mounted) {
-            router.push('/')
-          }
-          return
-        }
-        
-        if (mounted) {
-          setUser(session.user)
-          checkSubscription(session.user.id) // Ne pas attendre
-        }
-      } catch (err) {
-        console.error('Error checking auth:', err)
-      } finally {
-        if (mounted) {
-          setLoading(false)
-        }
-      }
-    }
-
-    checkAuth()
-
-    // Écouter les changements d'authentification
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (!mounted) return
-      
-      if (event === 'SIGNED_OUT') {
-        router.push('/')
-      } else if (session?.user) {
-        setUser(session.user)
-        checkSubscription(session.user.id) // Ne pas attendre
-      } else {
-        setUser(null)
-        setHasSubscription(false)
-        setSubscription(null)
-      }
-      
-      setLoading(false)
-    })
-
-    return () => {
-      mounted = false
-      subscription.unsubscribe()
-    }
-  }, [router])
+  }, [user, loading, router])
 
   const handleLogout = async () => {
     try {
       const supabase = createClient()
-      const { error } = await supabase.auth.signOut()
-      
-      if (error) {
-        console.error('Erreur lors de la déconnexion:', error)
-      }
-      
-      // Forcer le rechargement pour s'assurer que l'état est mis à jour
+      await supabase.auth.signOut()
       window.location.href = '/'
     } catch (err) {
       console.error('Erreur lors de la déconnexion:', err)
-      // En cas d'erreur, forcer quand même le rechargement
       window.location.href = '/'
     }
   }
@@ -201,7 +104,7 @@ export default function Dashboard() {
               <div>
                 <p className="text-sm text-gray-400">Type</p>
                 <p className="text-2xl font-bold text-white">
-                  {subscription?.plan_id ? 'Premium' : 'Standard'}
+                  {hasSubscription ? 'Premium' : 'Standard'}
                 </p>
               </div>
               <div className="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center">
