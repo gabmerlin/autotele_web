@@ -17,8 +17,11 @@ export default function Dashboard() {
     let mounted = true
     const supabase = createClient()
     
+    console.log('Dashboard useEffect starting...')
+    
     // Fonction pour vérifier l'abonnement
     const checkSubscription = async (userId: string) => {
+      console.log('Checking subscription for user:', userId)
       try {
         const { data: sub } = await supabase
           .from('subscriptions')
@@ -27,13 +30,17 @@ export default function Dashboard() {
           .eq('status', 'active')
           .single()
 
+        console.log('Subscription data:', sub)
+
         if (mounted) {
           if (sub && (!sub.expires_at || new Date(sub.expires_at) > new Date())) {
             setHasSubscription(true)
             setSubscription(sub)
+            console.log('Subscription active')
           } else {
             setHasSubscription(false)
             setSubscription(null)
+            console.log('No active subscription')
           }
         }
       } catch (err) {
@@ -47,9 +54,13 @@ export default function Dashboard() {
 
     // Vérifier l'authentification initiale
     const checkAuth = async () => {
+      console.log('Checking auth...')
       try {
         const { data: { user } } = await supabase.auth.getUser()
+        console.log('User from getuser:', user?.email)
+        
         if (!user) {
+          console.log('No user, redirecting to home')
           if (mounted) {
             router.push('/')
           }
@@ -63,6 +74,7 @@ export default function Dashboard() {
       } catch (err) {
         console.error('Error checking auth:', err)
       } finally {
+        console.log('Setting loading to false')
         if (mounted) {
           setLoading(false)
         }
@@ -73,23 +85,30 @@ export default function Dashboard() {
 
     // Écouter les changements d'authentification
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('Dashboard auth state change:', event, session?.user?.email)
+      
       if (!mounted) return
       
       if (event === 'SIGNED_OUT') {
+        console.log('User signed out, redirecting')
         router.push('/')
       } else if (session?.user) {
+        console.log('User session found:', session.user.email)
         setUser(session.user)
         await checkSubscription(session.user.id)
       } else {
+        console.log('No session user')
         setUser(null)
         setHasSubscription(false)
         setSubscription(null)
       }
       
+      console.log('Setting loading to false from auth change')
       setLoading(false)
     })
 
     return () => {
+      console.log('Dashboard useEffect cleanup')
       mounted = false
       subscription.unsubscribe()
     }
@@ -122,6 +141,9 @@ export default function Dashboard() {
           </div>
           <div className="text-white text-xl font-semibold">Chargement de votre espace...</div>
           <div className="text-gray-400 mt-2">Veuillez patienter</div>
+          <div className="text-xs text-gray-500 mt-4">
+            Debug: loading={loading.toString()}, user={user?.email || 'null'}
+          </div>
         </div>
       </div>
     )
