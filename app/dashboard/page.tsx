@@ -14,6 +14,7 @@ export default function Dashboard() {
   const router = useRouter()
 
   useEffect(() => {
+    let mounted = true
     const supabase = createClient()
     
     // Fonction pour vérifier l'abonnement
@@ -26,46 +27,72 @@ export default function Dashboard() {
           .eq('status', 'active')
           .single()
 
-        if (sub && (!sub.expires_at || new Date(sub.expires_at) > new Date())) {
-          setHasSubscription(true)
-          setSubscription(sub)
-        } else {
-          setHasSubscription(false)
-          setSubscription(null)
+        if (mounted) {
+          if (sub && (!sub.expires_at || new Date(sub.expires_at) > new Date())) {
+            setHasSubscription(true)
+            setSubscription(sub)
+          } else {
+            setHasSubscription(false)
+            setSubscription(null)
+          }
         }
       } catch (err) {
         console.error('Error checking subscription:', err)
-        setHasSubscription(false)
-        setSubscription(null)
+        if (mounted) {
+          setHasSubscription(false)
+          setSubscription(null)
+        }
       }
     }
 
     // Vérifier l'authentification initiale
     const checkAuth = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) {
-        router.push('/')
-        return
+      try {
+        const { data: { user } } = await supabase.auth.getUser()
+        if (!user) {
+          if (mounted) {
+            router.push('/')
+          }
+          return
+        }
+        
+        if (mounted) {
+          setUser(user)
+          await checkSubscription(user.id)
+        }
+      } catch (err) {
+        console.error('Error checking auth:', err)
+      } finally {
+        if (mounted) {
+          setLoading(false)
+        }
       }
-      setUser(user)
-      await checkSubscription(user.id)
-      setLoading(false)
     }
 
     checkAuth()
 
     // Écouter les changements d'authentification
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (!mounted) return
+      
       if (event === 'SIGNED_OUT') {
         router.push('/')
       } else if (session?.user) {
         setUser(session.user)
         await checkSubscription(session.user.id)
-        setLoading(false)
+      } else {
+        setUser(null)
+        setHasSubscription(false)
+        setSubscription(null)
       }
+      
+      setLoading(false)
     })
 
-    return () => subscription.unsubscribe()
+    return () => {
+      mounted = false
+      subscription.unsubscribe()
+    }
   }, [router])
 
   const handleLogout = async () => {
