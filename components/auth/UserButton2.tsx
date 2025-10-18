@@ -2,11 +2,11 @@
 
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { User, LogOut, CreditCard, Settings, ChevronDown, ShoppingCart } from 'lucide-react'
+import { User, LogOut, CreditCard, ChevronDown, ShoppingCart } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import AuthModal from './AuthModal'
 
-export default function UserButton() {
+export default function UserButton2() {
   const [user, setUser] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [showAuthModal, setShowAuthModal] = useState(false)
@@ -14,80 +14,78 @@ export default function UserButton() {
   const [hasSubscription, setHasSubscription] = useState(false)
   const router = useRouter()
 
-  console.log('UserButton render:', { loading, userEmail: user?.email, hasSubscription })
-
   useEffect(() => {
-    let mounted = true
     const supabase = createClient()
-    
-    console.log('UserButton: useEffect starting')
-    
+    let authSubscription: any = null
+
     // Fonction pour vérifier l'abonnement
     const checkSubscription = async (userId: string) => {
       try {
-        const { data: subscription } = await supabase
+        const { data } = await supabase
           .from('subscriptions')
           .select('*')
           .eq('user_id', userId)
           .eq('status', 'active')
-          .single()
+          .maybeSingle()
 
-        if (mounted) {
-          if (subscription && (!subscription.expires_at || new Date(subscription.expires_at) > new Date())) {
-            console.log('User has active subscription')
-            setHasSubscription(true)
-          } else {
-            console.log('User has no active subscription')
-            setHasSubscription(false)
-          }
+        if (data && (!data.expires_at || new Date(data.expires_at) > new Date())) {
+          setHasSubscription(true)
+        } else {
+          setHasSubscription(false)
         }
       } catch (err) {
-        console.log('Error checking subscription:', err)
-        if (mounted) setHasSubscription(false)
+        setHasSubscription(false)
       }
     }
 
-    // Utiliser UNIQUEMENT onAuthStateChange (getSession est bloqué)
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log('UserButton - Auth event:', event, session?.user?.email)
-      
-      if (mounted) {
-        if (event === 'INITIAL_SESSION') {
-          // Premier chargement
-          setUser(session?.user ?? null)
-          if (session?.user) {
-            await checkSubscription(session.user.id)
-          }
-          setLoading(false)
-        } else if (event === 'SIGNED_IN') {
-          setUser(session?.user ?? null)
-          if (session?.user) {
-            await checkSubscription(session.user.id)
-          }
-        } else if (event === 'SIGNED_OUT') {
-          setUser(null)
-          setHasSubscription(false)
+    // Charger l'utilisateur initial
+    const loadUser = async () => {
+      try {
+        const { data: { user: currentUser } } = await supabase.auth.getUser()
+        console.log('UserButton2 - Initial user:', currentUser?.email)
+        setUser(currentUser)
+        if (currentUser) {
+          await checkSubscription(currentUser.id)
         }
+        setLoading(false)
+      } catch (error) {
+        console.error('UserButton2 - Error loading user:', error)
+        setLoading(false)
+      }
+    }
+
+    loadUser()
+
+    // Écouter les changements
+    authSubscription = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('UserButton2 - Auth change:', event, session?.user?.email)
+      
+      // Toujours mettre loading à false pour n'importe quel événement
+      setLoading(false)
+      
+      setUser(session?.user ?? null)
+      if (session?.user) {
+        await checkSubscription(session.user.id)
+      } else {
+        setHasSubscription(false)
       }
     })
 
     return () => {
-      mounted = false
-      subscription.unsubscribe()
+      authSubscription?.data?.subscription?.unsubscribe()
     }
   }, [])
 
   const handleLogout = async () => {
     const supabase = createClient()
     await supabase.auth.signOut()
-    window.location.reload()
+    setShowMenu(false)
+    window.location.href = '/'
   }
 
   if (loading) {
     return (
-      <div className="w-10 h-10 rounded-full bg-white/10 animate-pulse flex items-center justify-center">
-        <span className="text-xs text-white">...</span>
-      </div>
+      <div className="w-10 h-10 rounded-full bg-white/10 animate-pulse" />
     )
   }
 
@@ -132,7 +130,7 @@ export default function UserButton() {
           />
           
           {/* Menu */}
-          <div className="absolute right-0 mt-2 w-72 glass-panel rounded-xl overflow-hidden z-[60] border border-white/10 shadow-2xl">
+          <div className="absolute right-0 mt-2 w-72 rounded-xl overflow-hidden z-[60] border border-white/20 shadow-2xl bg-black/90 backdrop-blur-xl">
             <div className="p-4 border-b border-white/10 bg-gradient-to-r from-blue-500/10 to-purple-500/10">
               <p className="text-xs text-gray-400 mb-1">Connecté en tant que</p>
               <p className="text-sm font-medium text-white truncate">{user.email}</p>
@@ -149,13 +147,10 @@ export default function UserButton() {
                 </div>
               )}
             </div>
-            
+
             <div className="p-2">
               <button
-                onClick={() => {
-                  setShowMenu(false)
-                  router.push('/dashboard')
-                }}
+                onClick={() => { setShowMenu(false); router.push('/dashboard') }}
                 className="w-full flex items-center gap-3 px-4 py-3 text-white hover:bg-white/10 rounded-lg transition-colors font-medium"
               >
                 <CreditCard className="w-5 h-5 text-blue-400" />
@@ -164,13 +159,10 @@ export default function UserButton() {
                   <div className="text-xs text-gray-400">Gérer mon abonnement</div>
                 </div>
               </button>
-              
+
               {!hasSubscription && (
                 <button
-                  onClick={() => {
-                    setShowMenu(false)
-                    router.push('/pricing')
-                  }}
+                  onClick={() => { setShowMenu(false); router.push('/pricing') }}
                   className="w-full flex items-center gap-3 px-4 py-3 text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-lg transition-all mt-2 font-semibold"
                 >
                   <ShoppingCart className="w-5 h-5" />
@@ -180,9 +172,9 @@ export default function UserButton() {
                   </div>
                 </button>
               )}
-              
+
               <div className="border-t border-white/10 my-2" />
-              
+
               <button
                 onClick={handleLogout}
                 className="w-full flex items-center gap-3 px-4 py-3 text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"

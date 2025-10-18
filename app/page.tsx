@@ -25,7 +25,7 @@ import {
 } from 'lucide-react'
 import ImageGallery from '@/components/ImageGallery'
 import DownloadButton from '@/components/DownloadButton'
-import UserButton from '@/components/auth/UserButton'
+import UserButton2 from '@/components/auth/UserButton2'
 
 export default function Home() {
   const [openFaq, setOpenFaq] = useState<number | null>(null)
@@ -125,7 +125,7 @@ export default function Home() {
   return (
     <main className="min-h-screen overflow-x-hidden">
       {/* Floating Navigation */}
-      <FloatingNav navItems={navItems} rightElement={<UserButton />} />
+      <FloatingNav navItems={navItems} rightElement={<UserButton2 />} />
 
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
@@ -151,12 +151,12 @@ export default function Home() {
             transition={{ duration: 0.8, type: "spring" }}
             className="flex justify-center mb-12 animate-float"
           >
-            <Image 
+            <img 
               src="/logo.png" 
               alt="AutoTele Logo" 
               width={150} 
               height={150}
-              className="drop-shadow-2xl glow-effect"
+              className="drop-shadow-2xl glow-effect logo-transparent"
             />
           </motion.div>
           

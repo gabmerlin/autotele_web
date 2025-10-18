@@ -31,80 +31,89 @@ export default function DownloadButton({
 
   useEffect(() => {
     const supabase = createClient()
+    let mounted = true
 
     // Charger les informations de version
     fetch('/updates/version.json')
       .then(response => response.json())
       .then(data => {
-        setVersionInfo(data)
-        setLoading(false)
+        if (mounted) {
+          setVersionInfo(data)
+          setLoading(false)
+        }
       })
       .catch(error => {
         console.error('Erreur lors du chargement de la version:', error)
-        setLoading(false)
+        if (mounted) {
+          setLoading(false)
+        }
       })
 
-    // Vérifier l'utilisateur et son abonnement
-    supabase.auth.getUser().then(async ({ data: { user } }) => {
-      setUser(user)
-      
-      if (user) {
-        // Vérifier si l'utilisateur a un abonnement actif
+    // Fonction pour vérifier l'abonnement
+    const checkSubscription = async (userId: string) => {
+      try {
         const { data: subscription } = await supabase
           .from('subscriptions')
           .select('*')
-          .eq('user_id', user.id)
+          .eq('user_id', userId)
           .eq('status', 'active')
           .single()
 
-        if (subscription) {
-          // Vérifier si l'abonnement n'est pas expiré
-          if (!subscription.expires_at || new Date(subscription.expires_at) > new Date()) {
+        if (mounted) {
+          if (subscription && (!subscription.expires_at || new Date(subscription.expires_at) > new Date())) {
             setHasSubscription(true)
+          } else {
+            setHasSubscription(false)
           }
         }
+      } catch (err) {
+        if (mounted) {
+          setHasSubscription(false)
+        }
       }
-      
-      setCheckingSubscription(false)
+    }
+
+    // Vérifier l'utilisateur initial
+    supabase.auth.getUser().then(async ({ data: { user } }) => {
+      if (mounted) {
+        setUser(user)
+        if (user) {
+          await checkSubscription(user.id)
+        }
+        setCheckingSubscription(false)
+      }
     })
 
     // Écouter les changements d'authentification
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      setUser(session?.user ?? null)
-      
-      if (session?.user) {
-        const { data: sub } = await supabase
-          .from('subscriptions')
-          .select('*')
-          .eq('user_id', session.user.id)
-          .eq('status', 'active')
-          .single()
-
-        if (sub && (!sub.expires_at || new Date(sub.expires_at) > new Date())) {
-          setHasSubscription(true)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (mounted) {
+        setUser(session?.user ?? null)
+        
+        if (session?.user) {
+          await checkSubscription(session.user.id)
         } else {
           setHasSubscription(false)
         }
-      } else {
-        setHasSubscription(false)
+        setCheckingSubscription(false)
       }
-      
-      setCheckingSubscription(false)
     })
 
-    return () => subscription.unsubscribe()
+    return () => {
+      mounted = false
+      subscription.unsubscribe()
+    }
   }, [])
 
   const handleDownloadClick = () => {
     if (!user) {
-      // Rediriger vers la page de pricing avec message
-      router.push('/pricing')
+      // Rediriger vers la page de pricing pour se connecter
+      router.push('/pricing?message=connect')
       return
     }
 
     if (!hasSubscription) {
-      // Rediriger vers la page de pricing
-      router.push('/pricing')
+      // Rediriger vers la page de pricing pour s'abonner
+      router.push('/pricing?message=subscribe')
       return
     }
 
@@ -114,7 +123,7 @@ export default function DownloadButton({
     }
   }
 
-  if (loading || checkingSubscription) {
+  if (loading) {
     return (
       <button disabled className={`${className} opacity-50 cursor-not-allowed`}>
         <span className="flex items-center gap-3">
@@ -125,16 +134,43 @@ export default function DownloadButton({
     )
   }
 
+  // Si on vérifie encore l'abonnement, afficher un bouton temporaire
+  if (checkingSubscription) {
+    return (
+      <button 
+        onClick={handleDownloadClick}
+        className={className}
+        title="Vérification en cours..."
+      >
+        <span className="flex items-center gap-3">
+          <Download className="w-6 h-6" />
+          {children}
+          {showVersion && versionInfo && (
+            <span className="text-sm opacity-75">
+              v{versionInfo.version}
+            </span>
+          )}
+        </span>
+      </button>
+    )
+  }
+
   // Si l'utilisateur n'est pas connecté ou n'a pas d'abonnement
   if (!user || !hasSubscription) {
     return (
       <button 
         onClick={handleDownloadClick}
-        className={`${className} relative`}
+        className={className}
+        title={!user ? 'Connectez-vous pour télécharger' : 'Souscrivez à un abonnement pour télécharger'}
       >
         <span className="flex items-center gap-3">
-          <Lock className="w-6 h-6" />
-          {!user ? 'Se connecter pour télécharger' : 'Souscrire pour télécharger'}
+          <Download className="w-6 h-6" />
+          {children}
+          {showVersion && versionInfo && (
+            <span className="text-sm opacity-75">
+              v{versionInfo.version}
+            </span>
+          )}
         </span>
       </button>
     )

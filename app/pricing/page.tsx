@@ -19,10 +19,20 @@ export default function PricingPage() {
   const [showBTCPayModal, setShowBTCPayModal] = useState(false)
   const [checkoutUrl, setCheckoutUrl] = useState<string | null>(null)
   const [invoiceId, setInvoiceId] = useState<string | null>(null)
+  const [message, setMessage] = useState<string | null>(null)
   const router = useRouter()
 
   useEffect(() => {
     const supabase = createClient()
+
+    // Vérifier les paramètres URL pour les messages
+    const urlParams = new URLSearchParams(window.location.search)
+    const messageParam = urlParams.get('message')
+    if (messageParam === 'connect') {
+      setMessage('Connectez-vous pour accéder au téléchargement d\'AutoTele')
+    } else if (messageParam === 'subscribe') {
+      setMessage('Souscrivez à un abonnement pour télécharger AutoTele')
+    }
 
     // Charger les plans
     supabase
@@ -102,6 +112,15 @@ export default function PricingPage() {
           <p className="text-xl text-gray-400 max-w-3xl mx-auto">
             Accédez à toutes les fonctionnalités d'AutoTele et commencez à automatiser vos messages Telegram dès maintenant
           </p>
+
+          {/* Message d'information */}
+          {message && (
+            <div className="mt-8 p-4 bg-blue-500/10 border border-blue-500/30 rounded-xl max-w-2xl mx-auto">
+              <p className="text-blue-400 font-medium text-center">
+                💡 {message}
+              </p>
+            </div>
+          )}
         </motion.div>
 
         {/* Pricing Cards */}

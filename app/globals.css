@@ -45,6 +45,22 @@
     box-shadow: 0 0 80px rgba(0, 136, 204, 0.6),
                 0 0 120px rgba(0, 212, 255, 0.4);
   }
+
+  .logo-transparent {
+    background: transparent !important;
+    background-color: transparent !important;
+    image-rendering: auto;
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
+  .logo-transparent::before,
+  .logo-transparent::after {
+    display: none !important;
+  }
 }
 
 /* Custom Animations */
