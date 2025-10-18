@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { Mail, Lock, User, Loader2 } from 'lucide-react'
+import { Mail, Lock, User, Loader2, CheckCircle, AlertCircle } from 'lucide-react'
 
 interface SignupFormProps {
   onSuccess: () => void
@@ -15,6 +15,7 @@ export default function SignupForm({ onSuccess }: SignupFormProps) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
+  const [needsEmailConfirmation, setNeedsEmailConfirmation] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -37,7 +38,7 @@ export default function SignupForm({ onSuccess }: SignupFormProps) {
 
     try {
       const supabase = createClient()
-      const { error: signUpError } = await supabase.auth.signUp({
+      const { data, error: signUpError } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -47,11 +48,19 @@ export default function SignupForm({ onSuccess }: SignupFormProps) {
 
       if (signUpError) throw signUpError
 
-      setSuccess(true)
-      setTimeout(() => {
-        onSuccess()
-        window.location.reload()
-      }, 2000)
+      // Vérifier si Supabase nécessite une confirmation email
+      if (data?.user && !data?.session) {
+        // Email de confirmation envoyé
+        setNeedsEmailConfirmation(true)
+        setSuccess(true)
+      } else {
+        // Compte créé et connecté directement (confirmation email désactivée)
+        setSuccess(true)
+        setTimeout(() => {
+          onSuccess()
+          window.location.reload()
+        }, 2000)
+      }
     } catch (err: any) {
       setError(err.message || 'Une erreur est survenue')
     } finally {
@@ -67,9 +76,30 @@ export default function SignupForm({ onSuccess }: SignupFormProps) {
         </div>
       )}
 
-      {success && (
+      {success && !needsEmailConfirmation && (
         <div className="bg-green-500/10 border border-green-500/50 rounded-lg p-4 text-green-400 text-sm">
           Compte créé avec succès ! Connexion en cours...
+        </div>
+      )}
+
+      {success && needsEmailConfirmation && (
+        <div className="bg-blue-500/10 border border-blue-500/50 rounded-lg p-4">
+          <div className="flex items-start gap-3">
+            <CheckCircle className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="text-blue-400 font-semibold mb-2">Email de confirmation envoyé !</p>
+              <p className="text-sm text-gray-300">
+                Nous avons envoyé un email de confirmation à <strong className="text-white">{email}</strong>.
+              </p>
+              <p className="text-sm text-gray-300 mt-2">
+                Veuillez vérifier votre boîte de réception et cliquer sur le lien pour activer votre compte.
+              </p>
+              <p className="text-xs text-gray-400 mt-3 flex items-center gap-2">
+                <AlertCircle className="w-4 h-4" />
+                Pensez à vérifier vos spams si vous ne voyez pas l'email.
+              </p>
+            </div>
+          </div>
         </div>
       )}
 
@@ -138,6 +168,11 @@ export default function SignupForm({ onSuccess }: SignupFormProps) {
           <>
             <Loader2 className="w-5 h-5 animate-spin" />
             Création du compte...
+          </>
+        ) : success && needsEmailConfirmation ? (
+          <>
+            <CheckCircle className="w-5 h-5" />
+            Email envoyé !
           </>
         ) : success ? (
           'Compte créé !'
