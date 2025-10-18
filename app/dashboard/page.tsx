@@ -17,11 +17,8 @@ export default function Dashboard() {
     let mounted = true
     const supabase = createClient()
     
-    console.log('Dashboard useEffect starting...')
-    
     // Fonction pour vérifier l'abonnement (non bloquante)
     const checkSubscription = (userId: string) => {
-      console.log('Checking subscription for user:', userId)
       
       // Ne pas attendre - juste vérifier en arrière-plan
       const fetchSubscription = async () => {
@@ -33,30 +30,19 @@ export default function Dashboard() {
             .eq('status', 'active')
             .single()
 
-          console.log('Subscription query result:', { data: sub, error })
-
           if (!mounted) return
 
           if (error) {
-            // Si l'erreur est "PGRST116", cela signifie qu'il n'y a pas d'abonnement
-            if (error.code === 'PGRST116') {
-              console.log('No subscription found (PGRST116)')
-            } else {
-              console.error('Subscription error:', error)
-            }
             setHasSubscription(false)
             setSubscription(null)
           } else if (sub && (!sub.expires_at || new Date(sub.expires_at) > new Date())) {
             setHasSubscription(true)
             setSubscription(sub)
-            console.log('Subscription active')
           } else {
             setHasSubscription(false)
             setSubscription(null)
-            console.log('Subscription expired or invalid')
           }
         } catch (err: any) {
-          console.error('Error checking subscription:', err)
           if (mounted) {
             setHasSubscription(false)
             setSubscription(null)
@@ -69,17 +55,14 @@ export default function Dashboard() {
 
     // Vérifier l'authentification initiale avec getSession au lieu de getUser
     const checkAuth = async () => {
-      console.log('Checking auth with getSession...')
       try {
         const { data: { session }, error } = await supabase.auth.getSession()
-        console.log('Session result:', { user: session?.user?.email, error })
         
         if (error) {
           console.error('Session error:', error)
         }
         
         if (!session?.user) {
-          console.log('No session user, redirecting to home')
           if (mounted) {
             router.push('/')
           }
@@ -87,14 +70,12 @@ export default function Dashboard() {
         }
         
         if (mounted) {
-          console.log('Setting user:', session.user.email)
           setUser(session.user)
           checkSubscription(session.user.id) // Ne pas attendre
         }
       } catch (err) {
         console.error('Error checking auth:', err)
       } finally {
-        console.log('Setting loading to false')
         if (mounted) {
           setLoading(false)
         }
@@ -105,30 +86,23 @@ export default function Dashboard() {
 
     // Écouter les changements d'authentification
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log('Dashboard auth state change:', event, session?.user?.email)
-      
       if (!mounted) return
       
       if (event === 'SIGNED_OUT') {
-        console.log('User signed out, redirecting')
         router.push('/')
       } else if (session?.user) {
-        console.log('User session found:', session.user.email)
         setUser(session.user)
         checkSubscription(session.user.id) // Ne pas attendre
       } else {
-        console.log('No session user')
         setUser(null)
         setHasSubscription(false)
         setSubscription(null)
       }
       
-      console.log('Setting loading to false from auth change')
       setLoading(false)
     })
 
     return () => {
-      console.log('Dashboard useEffect cleanup')
       mounted = false
       subscription.unsubscribe()
     }
@@ -161,9 +135,6 @@ export default function Dashboard() {
           </div>
           <div className="text-white text-xl font-semibold">Chargement de votre espace...</div>
           <div className="text-gray-400 mt-2">Veuillez patienter</div>
-          <div className="text-xs text-gray-500 mt-4">
-            Debug: loading={loading.toString()}, user={user?.email || 'null'}
-          </div>
         </div>
       </div>
     )
