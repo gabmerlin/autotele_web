@@ -69,9 +69,21 @@ export default function Dashboard() {
   }, [router])
 
   const handleLogout = async () => {
-    const supabase = createClient()
-    await supabase.auth.signOut()
-    router.push('/')
+    try {
+      const supabase = createClient()
+      const { error } = await supabase.auth.signOut()
+      
+      if (error) {
+        console.error('Erreur lors de la déconnexion:', error)
+      }
+      
+      // Forcer le rechargement pour s'assurer que l'état est mis à jour
+      window.location.href = '/'
+    } catch (err) {
+      console.error('Erreur lors de la déconnexion:', err)
+      // En cas d'erreur, forcer quand même le rechargement
+      window.location.href = '/'
+    }
   }
 
   if (loading) {

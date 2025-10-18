@@ -77,10 +77,22 @@ export default function UserButton2() {
   }, [])
 
   const handleLogout = async () => {
-    const supabase = createClient()
-    await supabase.auth.signOut()
-    setShowMenu(false)
-    window.location.href = '/'
+    try {
+      const supabase = createClient()
+      const { error } = await supabase.auth.signOut()
+      
+      if (error) {
+        console.error('Erreur lors de la déconnexion:', error)
+      }
+      
+      setShowMenu(false)
+      // Forcer le rechargement pour s'assurer que l'état est mis à jour
+      window.location.reload()
+    } catch (err) {
+      console.error('Erreur lors de la déconnexion:', err)
+      // En cas d'erreur, forcer quand même le rechargement
+      window.location.reload()
+    }
   }
 
   if (loading) {

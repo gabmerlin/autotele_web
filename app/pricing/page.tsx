@@ -25,27 +25,37 @@ export default function PricingPage() {
   useEffect(() => {
     const supabase = createClient()
 
-    // Vérifier les paramètres URL pour les messages
-    const urlParams = new URLSearchParams(window.location.search)
-    const messageParam = urlParams.get('message')
-    if (messageParam === 'connect') {
-      setMessage('Connectez-vous pour accéder au téléchargement d\'AutoTele')
-    } else if (messageParam === 'subscribe') {
-      setMessage('Souscrivez à un abonnement pour télécharger AutoTele')
+    // Vérifier les paramètres URL pour les messages (côté client uniquement)
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search)
+      const messageParam = urlParams.get('message')
+      if (messageParam === 'connect') {
+        setMessage('Connectez-vous pour accéder au téléchargement d\'AutoTele')
+      } else if (messageParam === 'subscribe') {
+        setMessage('Souscrivez à un abonnement pour télécharger AutoTele')
+      }
     }
 
     // Charger les plans
-    supabase
-      .from('plans')
-      .select('*')
-      .eq('is_active', true)
-      .order('price_usd', { ascending: true })
-      .then(({ data, error }) => {
+    const loadPlans = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('plans')
+          .select('*')
+          .eq('is_active', true)
+          .order('price_usd', { ascending: true })
+
         if (!error && data) {
           setPlans(data)
         }
+      } catch (err) {
+        console.error('Erreur lors du chargement des plans:', err)
+      } finally {
         setLoading(false)
-      })
+      }
+    }
+
+    loadPlans()
 
     // Vérifier l'utilisateur
     supabase.auth.getUser().then(({ data: { user } }) => {
