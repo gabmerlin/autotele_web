@@ -52,15 +52,19 @@ export default function Dashboard() {
       }
     }
 
-    // Vérifier l'authentification initiale
+    // Vérifier l'authentification initiale avec getSession au lieu de getUser
     const checkAuth = async () => {
-      console.log('Checking auth...')
+      console.log('Checking auth with getSession...')
       try {
-        const { data: { user } } = await supabase.auth.getUser()
-        console.log('User from getuser:', user?.email)
+        const { data: { session }, error } = await supabase.auth.getSession()
+        console.log('Session result:', { user: session?.user?.email, error })
         
-        if (!user) {
-          console.log('No user, redirecting to home')
+        if (error) {
+          console.error('Session error:', error)
+        }
+        
+        if (!session?.user) {
+          console.log('No session user, redirecting to home')
           if (mounted) {
             router.push('/')
           }
@@ -68,8 +72,9 @@ export default function Dashboard() {
         }
         
         if (mounted) {
-          setUser(user)
-          await checkSubscription(user.id)
+          console.log('Setting user:', session.user.email)
+          setUser(session.user)
+          await checkSubscription(session.user.id)
         }
       } catch (err) {
         console.error('Error checking auth:', err)
