@@ -85,6 +85,7 @@ export async function POST(request: NextRequest) {
         .insert({
           user_id: invoice.user_id,
           invoice_id: invoiceId,
+          plan_id: invoice.plan_id,
           status: 'active',
           activated_at: new Date().toISOString(),
           expires_at: expiresAt,
