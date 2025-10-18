@@ -19,37 +19,52 @@ export default function Dashboard() {
     
     console.log('Dashboard useEffect starting...')
     
-    // Fonction pour vérifier l'abonnement
-    const checkSubscription = async (userId: string) => {
+    // Fonction pour vérifier l'abonnement (non bloquante)
+    const checkSubscription = (userId: string) => {
       console.log('Checking subscription for user:', userId)
-      try {
-        const { data: sub } = await supabase
-          .from('subscriptions')
-          .select('*')
-          .eq('user_id', userId)
-          .eq('status', 'active')
-          .single()
+      
+      // Ne pas attendre - juste vérifier en arrière-plan
+      const fetchSubscription = async () => {
+        try {
+          const { data: sub, error } = await supabase
+            .from('subscriptions')
+            .select('*')
+            .eq('user_id', userId)
+            .eq('status', 'active')
+            .single()
 
-        console.log('Subscription data:', sub)
+          console.log('Subscription query result:', { data: sub, error })
 
-        if (mounted) {
-          if (sub && (!sub.expires_at || new Date(sub.expires_at) > new Date())) {
+          if (!mounted) return
+
+          if (error) {
+            // Si l'erreur est "PGRST116", cela signifie qu'il n'y a pas d'abonnement
+            if (error.code === 'PGRST116') {
+              console.log('No subscription found (PGRST116)')
+            } else {
+              console.error('Subscription error:', error)
+            }
+            setHasSubscription(false)
+            setSubscription(null)
+          } else if (sub && (!sub.expires_at || new Date(sub.expires_at) > new Date())) {
             setHasSubscription(true)
             setSubscription(sub)
             console.log('Subscription active')
           } else {
             setHasSubscription(false)
             setSubscription(null)
-            console.log('No active subscription')
+            console.log('Subscription expired or invalid')
+          }
+        } catch (err: any) {
+          console.error('Error checking subscription:', err)
+          if (mounted) {
+            setHasSubscription(false)
+            setSubscription(null)
           }
         }
-      } catch (err) {
-        console.error('Error checking subscription:', err)
-        if (mounted) {
-          setHasSubscription(false)
-          setSubscription(null)
-        }
       }
+
+      fetchSubscription()
     }
 
     // Vérifier l'authentification initiale avec getSession au lieu de getUser
@@ -74,7 +89,7 @@ export default function Dashboard() {
         if (mounted) {
           console.log('Setting user:', session.user.email)
           setUser(session.user)
-          await checkSubscription(session.user.id)
+          checkSubscription(session.user.id) // Ne pas attendre
         }
       } catch (err) {
         console.error('Error checking auth:', err)
@@ -100,7 +115,7 @@ export default function Dashboard() {
       } else if (session?.user) {
         console.log('User session found:', session.user.email)
         setUser(session.user)
-        await checkSubscription(session.user.id)
+        checkSubscription(session.user.id) // Ne pas attendre
       } else {
         console.log('No session user')
         setUser(null)
