@@ -25,6 +25,7 @@ import {
 } from 'lucide-react'
 import ImageGallery from '@/components/ImageGallery'
 import DownloadButton from '@/components/DownloadButton'
+import UserButton from '@/components/auth/UserButton'
 
 export default function Home() {
   const [openFaq, setOpenFaq] = useState<number | null>(null)
@@ -124,7 +125,7 @@ export default function Home() {
   return (
     <main className="min-h-screen overflow-x-hidden">
       {/* Floating Navigation */}
-      <FloatingNav navItems={navItems} />
+      <FloatingNav navItems={navItems} rightElement={<UserButton />} />
 
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">

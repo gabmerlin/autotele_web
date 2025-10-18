@@ -8,9 +8,11 @@ import Image from "next/image"
 export const FloatingNav = ({
   navItems,
   className,
+  rightElement,
 }: {
   navItems: { name: string; link: string; icon?: React.ReactNode }[]
   className?: string
+  rightElement?: React.ReactNode
 }) => {
   const { scrollY } = useScroll()
   const [visible, setVisible] = useState(true)
@@ -46,17 +48,24 @@ export const FloatingNav = ({
         className
       )}
     >
-      <div className="flex items-center justify-center space-x-8">
-        {navItems.map((item, idx) => (
-          <a
-            key={idx}
-            href={item.link}
-            className="text-white hover:text-purple-300 transition-colors duration-200 flex items-center space-x-2 text-sm font-medium"
-          >
-            {item.icon}
-            <span>{item.name}</span>
-          </a>
-        ))}
+      <div className="flex items-center justify-between space-x-8">
+        <div className="flex items-center space-x-8">
+          {navItems.map((item, idx) => (
+            <a
+              key={idx}
+              href={item.link}
+              className="text-white hover:text-purple-300 transition-colors duration-200 flex items-center space-x-2 text-sm font-medium"
+            >
+              {item.icon}
+              <span>{item.name}</span>
+            </a>
+          ))}
+        </div>
+        {rightElement && (
+          <div className="ml-8">
+            {rightElement}
+          </div>
+        )}
       </div>
     </motion.div>
   )
