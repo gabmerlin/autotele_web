@@ -15,21 +15,7 @@ export const FloatingNav = ({
   rightElement?: React.ReactNode
 }) => {
   const { scrollY } = useScroll()
-  const [visible, setVisible] = useState(true)
-
-  useEffect(() => {
-    const updateVisibility = () => {
-      const currentScrollY = window.scrollY
-      if (currentScrollY > 100) {
-        setVisible(true)
-      } else {
-        setVisible(false)
-      }
-    }
-
-    window.addEventListener("scroll", updateVisibility)
-    return () => window.removeEventListener("scroll", updateVisibility)
-  }, [])
+  const [visible, setVisible] = useState(true) // Toujours visible
 
   const backgroundColor = useTransform(
     scrollY,
@@ -39,9 +25,9 @@ export const FloatingNav = ({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: -100 }}
-      animate={{ opacity: visible ? 1 : 0, y: visible ? 0 : -100 }}
-      transition={{ duration: 0.3 }}
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
       style={{ backgroundColor }}
       className={cn(
         "fixed top-6 inset-x-0 max-w-fit mx-auto z-50 px-8 py-4 rounded-full border border-white/20 backdrop-blur-xl shadow-[0_8px_32px_0_rgba(31,38,135,0.37)]",
