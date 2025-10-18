@@ -35,7 +35,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const checkSubscription = async (userId: string) => {
     try {
+      console.log('AuthContext - Checking subscription for:', userId)
       const supabase = createClient()
+      
       const { data, error } = await supabase
         .from('subscriptions')
         .select('*')
@@ -43,14 +45,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         .eq('status', 'active')
         .maybeSingle()
 
+      console.log('AuthContext - Subscription result:', { data, error })
+
       if (error && error.code !== 'PGRST116') {
         console.error('Subscription check error:', error)
       }
 
       if (data && (!data.expires_at || new Date(data.expires_at) > new Date())) {
+        console.log('AuthContext - Subscription active')
         setSubscription(data)
         setHasSubscription(true)
       } else {
+        console.log('AuthContext - No active subscription')
         setSubscription(null)
         setHasSubscription(false)
       }
@@ -71,24 +77,34 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const supabase = createClient()
     let mounted = true
 
+    console.log('AuthContext - Initializing...')
+
     // Charger l'utilisateur initial avec getSession
     const initAuth = async () => {
       try {
+        console.log('AuthContext - Getting session...')
         const { data: { session }, error } = await supabase.auth.getSession()
         
         if (error) {
           console.error('Session error:', error)
         }
 
+        console.log('AuthContext - Session:', session?.user?.email || 'No user')
+
         if (mounted) {
           if (session?.user) {
             setUser(session.user)
-            await checkSubscription(session.user.id)
+            // Vérifier l'abonnement en arrière-plan (non bloquant)
+            checkSubscription(session.user.id).catch(err => {
+              console.error('Subscription check failed:', err)
+            })
           } else {
             setUser(null)
             setSubscription(null)
             setHasSubscription(false)
           }
+          // Toujours finir le loading après avoir vérifié la session
+          console.log('AuthContext - Setting loading to false')
           setLoading(false)
         }
       } catch (err) {
@@ -106,11 +122,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       async (event, session) => {
         if (!mounted) return
 
-        console.log('AuthContext - Auth change:', event)
+        console.log('AuthContext - Auth change:', event, session?.user?.email)
 
         if (session?.user) {
           setUser(session.user)
-          await checkSubscription(session.user.id)
+          // Vérifier l'abonnement en arrière-plan
+          checkSubscription(session.user.id).catch(err => {
+            console.error('Subscription check failed:', err)
+          })
         } else {
           setUser(null)
           setSubscription(null)
@@ -122,6 +141,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     )
 
     return () => {
+      console.log('AuthContext - Cleanup')
       mounted = false
       authSubscription.unsubscribe()
     }
