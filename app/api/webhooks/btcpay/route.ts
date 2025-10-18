@@ -8,9 +8,15 @@ export async function POST(request: NextRequest) {
     const rawBody = await request.text()
     const signature = request.headers.get('btcpay-sig') || ''
 
+    console.log('=== BTCPay Webhook Received ===')
+    console.log('Signature:', signature)
+    console.log('Body length:', rawBody.length)
+    console.log('Raw body:', rawBody)
+
     // Vérifier la signature du webhook
     if (!verifyWebhookSignature(rawBody, signature)) {
       console.error('Invalid webhook signature')
+      console.error('Expected signature for body:', rawBody)
       return NextResponse.json(
         { error: 'Invalid signature' },
         { status: 401 }
