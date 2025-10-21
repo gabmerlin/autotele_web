@@ -238,6 +238,99 @@ export default function Home() {
         </motion.div>
       </section>
 
+      {/* Results Section */}
+      <section className="relative py-24 px-6">
+        <div className="absolute inset-0 bg-gradient-to-r from-green-900/10 via-blue-900/10 to-purple-900/10" />
+        
+        <div className="relative z-10 max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl md:text-6xl font-bold mb-6">
+              Des <span className="gradient-text">Résultats Concrets</span>
+            </h2>
+            <p className="text-xl text-gray-400 max-w-3xl mx-auto">
+              Cas d'usage réel : automatisation efficace avec des résultats mesurables
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="glass-panel rounded-3xl p-8 md:p-12 border-2 border-green-500/30 bg-gradient-to-br from-green-900/20 via-blue-900/20 to-purple-900/20"
+          >
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-10">
+              {[
+                { number: '10', label: 'Comptes Telegram', icon: <Users className="w-8 h-8 text-blue-400" /> },
+                { number: '2', label: 'Messages / Compte / Jour', icon: <MessageSquare className="w-8 h-8 text-purple-400" /> },
+                { number: '15', label: 'Groupes Ciblés', icon: <Users className="w-8 h-8 text-green-400" /> },
+                { number: '40', label: 'Candidatures / Jour', icon: <Rocket className="w-8 h-8 text-orange-400" /> },
+              ].map((stat, idx) => (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: idx * 0.1 }}
+                  className="text-center"
+                >
+                  <motion.div
+                    whileHover={{ scale: 1.1 }}
+                    className="flex justify-center mb-4"
+                  >
+                    {stat.icon}
+                  </motion.div>
+                  <div className="text-4xl md:text-5xl font-bold gradient-text mb-2">
+                    {stat.number}
+                  </div>
+                  <div className="text-gray-300 text-sm md:text-base">
+                    {stat.label}
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.4 }}
+              className="text-center space-y-4"
+            >
+              <div className="inline-flex items-center gap-3 px-6 py-3 bg-green-500/20 border border-green-500/30 rounded-full">
+                <Check className="w-5 h-5 text-green-400" />
+                <span className="text-white font-semibold text-lg">
+                  Résultats vérifiés par un utilisateur réel
+                </span>
+              </div>
+              
+              <p className="text-gray-300 text-lg max-w-3xl mx-auto leading-relaxed">
+                Avec <strong className="text-white">10 comptes</strong>, en postant seulement <strong className="text-white">2 messages par compte par jour</strong> sur <strong className="text-white">15 groupes</strong>, 
+                cet utilisateur génère en moyenne <strong className="gradient-text text-xl">40 candidatures quotidiennes</strong>. 
+                <span className="block mt-3 text-blue-400">
+                  Imaginez ce que vous pourriez accomplir avec AutoTele !
+                </span>
+              </p>
+              
+              <div className="pt-6">
+                <div className="inline-block glass-panel px-6 py-4 rounded-xl border border-blue-500/30">
+                  <p className="text-gray-400 text-sm mb-2">Calcul simple :</p>
+                  <p className="text-white font-mono text-base">
+                    10 comptes × 2 messages × 15 groupes = <span className="gradient-text font-bold text-xl">300 messages automatisés/jour</span>
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
       {/* Features Section */}
       <section id="features" className="relative py-32 px-6">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-900/10 to-transparent" />
