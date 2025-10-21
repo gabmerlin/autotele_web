@@ -36,7 +36,8 @@ export default function UserButton2() {
       <>
         <button
           onClick={() => setShowAuthModal(true)}
-          className="btn-premium px-6 py-2 rounded-full text-sm font-semibold"
+          className="btn-premium px-6 py-2 rounded-full text-sm font-semibold focus:outline-none focus:ring-0 active:scale-95"
+          style={{ WebkitTapHighlightColor: 'transparent' }}
         >
           Se connecter
         </button>
@@ -67,12 +68,12 @@ export default function UserButton2() {
         <>
           {/* Backdrop */}
           <div 
-            className="fixed inset-0 z-40"
+            className="fixed inset-0 z-[105]"
             onClick={() => setShowMenu(false)}
           />
           
           {/* Menu */}
-          <div className="absolute right-0 mt-2 w-72 rounded-xl overflow-hidden z-[60] border border-white/20 shadow-2xl bg-black/90 backdrop-blur-xl">
+          <div className="absolute right-0 mt-2 w-72 rounded-xl overflow-hidden z-[120] border border-white/20 shadow-2xl bg-black/90 backdrop-blur-xl">
             <div className="p-4 border-b border-white/10 bg-gradient-to-r from-blue-500/10 to-purple-500/10">
               <p className="text-xs text-gray-400 mb-1">Connecté en tant que</p>
               <p className="text-sm font-medium text-white truncate">{user.email}</p>

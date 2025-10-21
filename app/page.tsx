@@ -140,7 +140,7 @@ export default function Home() {
         {/* Hero Content */}
         <motion.div 
           style={{ opacity, scale }}
-          className="relative z-10 max-w-7xl mx-auto px-6 text-center"
+          className="relative z-10 max-w-7xl mx-auto px-6 pt-24 md:pt-32 text-center"
         >
           {/* Logo with Float Animation */}
           <motion.div
@@ -318,12 +318,33 @@ export default function Home() {
                 </span>
               </p>
               
-              <div className="pt-6">
+              <div className="pt-6 space-y-4">
                 <div className="inline-block glass-panel px-6 py-4 rounded-xl border border-blue-500/30">
                   <p className="text-gray-400 text-sm mb-2">Calcul simple :</p>
                   <p className="text-white font-mono text-base">
                     10 comptes × 2 messages × 15 groupes = <span className="gradient-text font-bold text-xl">300 messages automatisés/jour</span>
                   </p>
+                </div>
+                
+                <div className="glass-panel p-6 rounded-2xl border border-purple-500/30 max-w-4xl mx-auto">
+                  <div className="flex items-start gap-3 mb-3">
+                    <Sparkles className="w-6 h-6 text-purple-400 flex-shrink-0 mt-1" />
+                    <h4 className="text-white font-semibold text-lg">Stratégie intelligente :</h4>
+                  </div>
+                  <div className="space-y-3 text-gray-300">
+                    <div className="flex items-start gap-3">
+                      <Check className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                      <p><strong className="text-white">Messages différents pour chaque compte</strong> : Variez vos contenus pour un aspect 100% naturel</p>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <Check className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                      <p><strong className="text-white">Heures de post personnalisées</strong> : Programmez des horaires différents pour chaque compte et évitez toute détection automatique</p>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <Check className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                      <p><strong className="text-white">Automatisation discrète</strong> : Telegram ne voit aucune différence avec une utilisation manuelle classique</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </motion.div>

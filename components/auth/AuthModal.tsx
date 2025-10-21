@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { X } from 'lucide-react'
 import LoginForm from './LoginForm'
 import SignupForm from './SignupForm'
@@ -9,23 +9,46 @@ interface AuthModalProps {
   isOpen: boolean
   onClose: () => void
   defaultView?: 'login' | 'signup'
+  onSuccess?: () => void
 }
 
-export default function AuthModal({ isOpen, onClose, defaultView = 'login' }: AuthModalProps) {
+export default function AuthModal({ isOpen, onClose, defaultView = 'login', onSuccess }: AuthModalProps) {
   const [view, setView] = useState<'login' | 'signup'>(defaultView)
+
+  // Désactiver le scroll du body quand le modal est ouvert
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'unset'
+    }
+
+    // Cleanup au démontage du composant
+    return () => {
+      document.body.style.overflow = 'unset'
+    }
+  }, [isOpen])
+
+  const handleSuccess = () => {
+    if (onSuccess) {
+      onSuccess()
+    } else {
+      onClose()
+    }
+  }
 
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-start justify-center p-4 pt-20">
-      {/* Backdrop */}
+    <div 
+      className="fixed inset-0 z-[100] flex items-start justify-center p-4 pt-32"
+      onClick={onClose}
+    >
+      {/* Modal sans backdrop visible */}
       <div 
-        className="absolute inset-0 bg-black/80 backdrop-blur-sm"
-        onClick={onClose}
-      />
-      
-      {/* Modal */}
-      <div className="relative rounded-2xl p-8 w-full max-w-md max-h-[90vh] overflow-y-auto z-[101] mt-8 bg-black/80 backdrop-blur-xl border border-white/20 shadow-2xl">
+        className="relative rounded-2xl p-8 w-full max-w-md max-h-[85vh] overflow-y-auto z-[101] mt-4 bg-black/90 backdrop-blur-xl border border-white/20 shadow-2xl"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Close Button */}
         <button
           onClick={onClose}
@@ -50,9 +73,9 @@ export default function AuthModal({ isOpen, onClose, defaultView = 'login' }: Au
 
         {/* Forms */}
         {view === 'login' ? (
-          <LoginForm onSuccess={onClose} />
+          <LoginForm onSuccess={handleSuccess} />
         ) : (
-          <SignupForm onSuccess={onClose} />
+          <SignupForm onSuccess={handleSuccess} />
         )}
 
         {/* Switch View */}
