@@ -19,9 +19,7 @@ import {
   Rocket,
   Sparkles,
   ChevronDown,
-  Check,
-  AlertTriangle,
-  ExternalLink
+  Check
 } from 'lucide-react'
 import ImageGallery from '@/components/ImageGallery'
 import DownloadButton from '@/components/DownloadButton'
@@ -238,61 +236,6 @@ export default function Home() {
             <motion.div className="w-1 h-2 bg-white rounded-full" />
           </motion.div>
         </motion.div>
-      </section>
-
-      {/* Security Notice Section */}
-      <section className="relative py-16 px-6">
-        <div className="relative z-10 max-w-5xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="glass-panel rounded-2xl p-8 md:p-10 border-2 border-yellow-500/30 bg-gradient-to-r from-yellow-900/20 to-orange-900/20"
-          >
-            <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
-              <div className="flex-shrink-0">
-                <motion.div
-                  animate={{ rotate: [0, -10, 10, -10, 0] }}
-                  transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
-                >
-                  <AlertTriangle className="w-16 h-16 text-yellow-400" />
-                </motion.div>
-              </div>
-              
-              <div className="flex-1 space-y-4">
-                <h3 className="text-2xl md:text-3xl font-bold text-white flex items-center gap-3">
-                  <span className="gradient-text">Avertissement de sécurité Windows</span>
-                </h3>
-                
-                <p className="text-gray-300 leading-relaxed text-lg">
-                  Windows peut afficher un avertissement de sécurité lors de la première installation d'AutoTele. 
-                  <strong className="text-white"> C'est tout à fait normal !</strong> Nous n'avons pas encore les moyens d'acheter 
-                  un certificat de signature de code (plusieurs centaines d'euros par an). L'application est 100% sécurisée 
-                  et vous pouvez vérifier son intégrité.
-                </p>
-                
-                <div className="flex flex-wrap items-center gap-4 pt-2">
-                  <a 
-                    href="https://www.virustotal.com/gui/file-analysis/MTFhMzIyY2RmN2M1MmUwMTU5MTlhMGIzNWJjZmViNDE6MTc2MDYyNTM2Mg=="
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600/80 hover:bg-blue-600 text-white font-semibold rounded-lg transition-all duration-300 hover:scale-105 border border-blue-400/50"
-                  >
-                    <Shield className="w-5 h-5" />
-                    Vérifier sur VirusTotal
-                    <ExternalLink className="w-4 h-4" />
-                  </a>
-                  
-                  <span className="text-sm text-gray-400 flex items-center gap-2">
-                    <Check className="w-5 h-5 text-green-400" />
-                    0/70 antivirus détectent une menace
-                  </span>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        </div>
       </section>
 
       {/* Features Section */}
