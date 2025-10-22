@@ -1,0 +1,73 @@
+{
+  "name": "AutoTele - Automatisation intelligente pour Telegram",
+  "short_name": "AutoTele",
+  "description": "Automatisez l'envoi de vos messages Telegram en toute sécurité grâce aux fonctions natives de planification.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#0088cc",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "fr",
+  "dir": "ltr",
+  "categories": ["productivity", "business", "utilities"],
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "16x16 32x32",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/icon.ico",
+      "sizes": "32x32",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/images/menu.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Interface principale d'AutoTele"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Télécharger",
+      "short_name": "Download",
+      "description": "Télécharger AutoTele",
+      "url": "/#download",
+      "icons": [
+        {
+          "src": "/logo.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Tarifs",
+      "short_name": "Pricing",
+      "description": "Voir les tarifs",
+      "url": "/pricing",
+      "icons": [
+        {
+          "src": "/logo.png",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ]
+}

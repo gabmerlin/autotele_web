@@ -11,6 +11,18 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import AuthModal from '@/components/auth/AuthModal'
 import { useAuth } from '@/lib/contexts/AuthContext'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Tarifs AutoTele - Abonnements Premium',
+  description: 'Découvrez nos tarifs pour AutoTele. Abonnements premium avec toutes les fonctionnalités d\'automatisation Telegram. Téléchargement inclus.',
+  keywords: ['tarifs AutoTele', 'prix AutoTele', 'abonnement AutoTele', 'premium AutoTele', 'coût AutoTele'],
+  openGraph: {
+    title: 'Tarifs AutoTele - Abonnements Premium',
+    description: 'Découvrez nos tarifs pour AutoTele. Abonnements premium avec toutes les fonctionnalités d\'automatisation Telegram.',
+    url: 'https://autotele.qgchatting.com/pricing',
+  },
+}
 
 export default function PricingPage() {
   const [plans, setPlans] = useState<Plan[]>([])
