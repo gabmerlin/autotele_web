@@ -61,14 +61,23 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/favicon.ico', sizes: '16x16 32x32', type: 'image/x-icon' },
       { url: '/icon.ico', sizes: '32x32', type: 'image/x-icon' },
-      { url: '/logo.png', sizes: '192x192', type: 'image/png' }
+      { url: '/logo.png', sizes: '192x192', type: 'image/png' },
+      { url: '/logo.png', sizes: '512x512', type: 'image/png' }
     ],
     apple: [
-      { url: '/logo.png', sizes: '180x180', type: 'image/png' }
+      { url: '/logo.png', sizes: '180x180', type: 'image/png' },
+      { url: '/logo.png', sizes: '192x192', type: 'image/png' }
     ],
-    shortcut: '/favicon.ico'
+    shortcut: '/favicon.ico',
+    other: [
+      {
+        rel: 'mask-icon',
+        url: '/logo.png',
+        color: '#0088cc'
+      }
+    ]
   },
   manifest: '/manifest.json',
   openGraph: {
@@ -110,10 +119,45 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <head>
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="icon" href="/icon.ico" type="image/x-icon" />
-        <link rel="apple-touch-icon" href="/logo.png" />
+        {/* Favicon principal */}
+        <link rel="icon" href="/favicon.ico" sizes="16x16 32x32" type="image/x-icon" />
+        <link rel="icon" href="/icon.ico" sizes="32x32" type="image/x-icon" />
+        
+        {/* Icônes haute résolution */}
+        <link rel="icon" href="/logo.png" sizes="192x192" type="image/png" />
+        <link rel="icon" href="/logo.png" sizes="512x512" type="image/png" />
+        
+        {/* Apple Touch Icon */}
+        <link rel="apple-touch-icon" href="/logo.png" sizes="180x180" />
+        <link rel="apple-touch-icon" href="/logo.png" sizes="192x192" />
+        
+        {/* Shortcut icon */}
+        <link rel="shortcut icon" href="/favicon.ico" />
+        
+        {/* Theme color */}
         <meta name="theme-color" content="#0088cc" />
+        <meta name="msapplication-TileColor" content="#0088cc" />
+        <meta name="msapplication-TileImage" content="/logo.png" />
+        
+        {/* Preload critical resources */}
+        <link rel="preload" href="/logo.png" as="image" type="image/png" />
+        
+        {/* Meta spécifiques pour Google */}
+        <meta name="application-name" content="AutoTele" />
+        <meta name="apple-mobile-web-app-title" content="AutoTele" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        
+        {/* Forcer la reconnaissance du logo */}
+        <meta property="og:image" content="https://autotele.qgchatting.com/logo.png" />
+        <meta property="og:image:width" content="512" />
+        <meta property="og:image:height" content="512" />
+        <meta property="og:image:type" content="image/png" />
+        <meta property="og:image:alt" content="AutoTele Logo" />
+        
+        {/* Twitter Card avec logo */}
+        <meta name="twitter:image" content="https://autotele.qgchatting.com/logo.png" />
+        <meta name="twitter:image:alt" content="AutoTele Logo" />
       </head>
       <body className={poppins.className}>
         <AuthProvider>
